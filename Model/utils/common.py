@@ -22,57 +22,6 @@ from torch import Size, Tensor
 
 from utils.logger import logger
 
-
-class CustomFixedCategorical(torch.distributions.Categorical):  # type: ignore
-    def sample(
-        self, sample_shape: Size = torch.Size()  # noqa: B008
-    ) -> Tensor:
-        return super().sample(sample_shape).unsqueeze(-1)
-
-    def log_probs(self, actions: Tensor) -> Tensor:
-        return (
-            super()
-            .log_prob(actions.squeeze(-1))
-            .view(actions.size(0), -1)
-            .sum(-1)
-            .unsqueeze(-1)
-        )
-
-    def mode(self):
-        return self.probs.argmax(dim=-1, keepdim=True)
-
-
-class CategoricalNet(nn.Module):
-    def __init__(self, num_inputs: int, num_outputs: int) -> None:
-        super().__init__()
-
-        self.linear = nn.Linear(num_inputs, num_outputs)
-
-        nn.init.orthogonal_(self.linear.weight, gain=0.01)
-        nn.init.constant_(self.linear.bias, 0)
-
-    def forward(self, x: Tensor) -> CustomFixedCategorical:
-        x = self.linear(x)
-        return CustomFixedCategorical(logits=x)
-
-
-def get_checkpoint_id(ckpt_path: str) -> Optional[int]:
-    r"""Attempts to extract the ckpt_id from the filename of a checkpoint.
-    Assumes structure of ckpt.ID.path .
-
-    Args:
-        ckpt_path: the path to the ckpt file
-
-    Returns:
-        returns an int if it is able to extract the ckpt_path else None
-    """
-    ckpt_path = os.path.basename(ckpt_path)
-    nums: List[int] = [int(s) for s in ckpt_path.split(".") if s.isdigit()]
-    if len(nums) > 0:
-        return nums[-1]
-    return None
-
-
 def observations_to_image(observation: Dict, info: Dict) -> np.ndarray:
     r"""Generate image of single frame from observation and info
     returned from a single environment step().
@@ -151,34 +100,6 @@ def append_text_to_image(image: np.ndarray, text: str):
     text_image = blank_image[0 : y + 10, 0:w]
     final = np.concatenate((image, text_image), axis=0)
     return final
-
-
-def poll_checkpoint_folder(
-    checkpoint_folder: str, previous_ckpt_ind: int
-) -> Optional[str]:
-    r"""Return (previous_ckpt_ind + 1)th checkpoint in checkpoint folder
-    (sorted by time of last modification).
-
-    Args:
-        checkpoint_folder: directory to look for checkpoints.
-        previous_ckpt_ind: index of checkpoint last returned.
-
-    Returns:
-        return checkpoint path if (previous_ckpt_ind + 1)th checkpoint is found
-        else return None.
-    """
-    assert os.path.isdir(checkpoint_folder), (
-        f"invalid checkpoint folder " f"path {checkpoint_folder}"
-    )
-    models_paths = list(
-        filter(os.path.isfile, glob.glob(checkpoint_folder + "/**/*.pth"))
-    )
-    models_paths.sort(key=os.path.getmtime)
-    ind = previous_ckpt_ind + 1
-    if ind < len(models_paths):
-        return models_paths[ind]
-    return None
-
 
 def generate_video(
     video_dir: Optional[str],
