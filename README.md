@@ -1,4 +1,4 @@
-# FineCog-Nav: 
+# FineCog-Nav: Integrating Fine-grained Cognitive Modules for Zero-shot Multimodal UAV Navigation
 
 ## 🛠️ **Getting Started**
 
