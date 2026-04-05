@@ -114,6 +114,21 @@ class VLMWrapper:
     def request_with_token_count(self, prompt, model_name=LLAMA3V, image=None, stream=False, multi_sentence=False, save_path=None):
         client = self.get_client(model_name)
 
+        messages=[
+            {
+                "role": "user", 
+                "content": [
+                    {"type": "text", "text": prompt},
+                    {
+                        "type": "image_url",
+                        "image_url": {
+                            "url": image
+                        }
+                    }
+                ]
+            }
+        ]
+
         if model_name == QWEN_OMNI_7B:
             stream = True
 
@@ -127,20 +142,7 @@ class VLMWrapper:
         if stream:
             response = client.chat.completions.create(
                 model=model_name,
-                messages=[
-                    {
-                        "role": "user", 
-                        "content": [
-                            {"type": "text", "text": prompt},
-                            {
-                                "type": "image_url",
-                                "image_url": {
-                                    "url": image
-                                }
-                            }
-                        ]
-                    }
-                ],
+                messages=messages,
                 stream=stream,
                 stream_options={
                     "include_usage": True
@@ -159,20 +161,7 @@ class VLMWrapper:
             if client == self.vllm_client:
                 response = client.chat.completions.create(
                     model=model_name,
-                    messages=[
-                        {
-                            "role": "user", 
-                            "content": [
-                                {"type": "text", "text": prompt},
-                                {
-                                    "type": "image_url",
-                                    "image_url": {
-                                        "url": image
-                                    }
-                                }
-                            ]
-                        }
-                    ],
+                    messages=messages,
                     stream=stream, 
                     timeout=60000,
                     extra_body={'repetition_penalty': 1.2}
@@ -181,40 +170,14 @@ class VLMWrapper:
                 if model_name == QWEN_3_5_122A10_SILICONFLOW or model_name == QWEN_3_5_397A17_SILICONFLOW or model_name == QWEN_3_5_122A10 or model_name == QWEN_3_5_397A17:
                     response = client.chat.completions.create(
                         model=model_name,
-                        messages=[
-                            {
-                                "role": "user", 
-                                "content": [
-                                    {"type": "text", "text": prompt},
-                                    {
-                                        "type": "image_url",
-                                        "image_url": {
-                                            "url": image
-                                        }
-                                    }
-                                ]
-                            }
-                        ],
+                        messages=messages,
                         stream=stream, 
                         extra_body={"enable_thinking": False}
                     )
                 else:
                     response = client.chat.completions.create(
                         model=model_name,
-                        messages=[
-                            {
-                                "role": "user", 
-                                "content": [
-                                    {"type": "text", "text": prompt},
-                                    {
-                                        "type": "image_url",
-                                        "image_url": {
-                                            "url": image
-                                        }
-                                    }
-                                ]
-                            }
-                        ],
+                        messages=messages,
                         stream=stream, 
                     )
             content = response.choices[0].message.content

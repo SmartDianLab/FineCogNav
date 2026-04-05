@@ -121,42 +121,42 @@ class LLMWrapper:
             return self.vllm_client
     def request_with_token_count(self, prompt, system_prompt=None, model_name=LLAMA3, stream=False):
         client = self.get_client(model_name)
+        if system_prompt is not None:
+            messages=[
+                {
+                    "role": "system",
+                    "content": system_prompt
+                },{
+                    "role": "user", 
+                    "content": prompt
+                }
+            ]
+        else:
+            messages=[
+                {
+                    "role": "user", 
+                    "content": prompt
+                }
+            ]
         if client == self.dashscope_client:
             stream = False if model_name == QWEN_3_5_397A17 or model_name == QWEN_3_5_122A10 or model_name == QWEN_2_5_72B else True
 
+        if model_name == QWEN_3_8B or model_name == QWEN_3_14B or model_name == QWEN_3_32B or model_name == GLM_5 or model_name == QWEN_3_5_397A17 or model_name == QWEN_3_5_122A10 or model_name == QWEN_3_5_397A17_SILICONFLOW or model_name == QWEN_3_5_122A10_SILICONFLOW:
+            response = client.chat.completions.create(
+                model=model_name,
+                messages=messages,
+                temperature=self.temperature,
+                stream=stream,
+                extra_body={"enable_thinking": False}
+            )
+        else:
+            response = client.chat.completions.create(
+                model=model_name,
+                messages=messages,
+                temperature=self.temperature,
+                stream=stream
+            )
         if stream:
-            if system_prompt is not None:
-                messages=[
-                    {
-                        "role": "system",
-                        "content": system_prompt
-                    },{
-                        "role": "user", 
-                        "content": prompt
-                    }
-                ]
-            else:
-                messages=[
-                    {
-                        "role": "user", 
-                        "content": prompt
-                    }
-                ]
-            if model_name == QWEN_3_8B or model_name == QWEN_3_14B or model_name == QWEN_3_32B or model_name == GLM_5 or model_name == QWEN_3_5_397A17 or model_name == QWEN_3_5_122A10 or model_name == QWEN_3_5_397A17_SILICONFLOW or model_name == QWEN_3_5_122A10_SILICONFLOW:
-                response = client.chat.completions.create(
-                    model=model_name,
-                    messages=messages,
-                    temperature=self.temperature,
-                    stream=stream,
-                    extra_body={"enable_thinking": False}
-                )
-            else:
-                response = client.chat.completions.create(
-                    model=model_name,
-                    messages=messages,
-                    temperature=self.temperature,
-                    stream=stream
-                )
             content = ""
             for chunk in response:
                 # print(chunk)
@@ -167,38 +167,6 @@ class LLMWrapper:
                     usage = chunk.usage
                     tokens = (usage.prompt_tokens, usage.total_tokens, usage.completion_tokens)
         else:
-            if system_prompt is not None:
-                messages=[
-                    {
-                        "role": "system",
-                        "content": system_prompt
-                    },{
-                        "role": "user", 
-                        "content": prompt
-                    }
-                ]
-            else:
-                messages=[
-                    {
-                        "role": "user", 
-                        "content": prompt
-                    }
-                ]
-            if model_name == QWEN_3_8B or model_name == QWEN_3_14B or model_name == QWEN_3_32B or model_name == GLM_5 or model_name == QWEN_3_5_397A17 or model_name == QWEN_3_5_122A10 or model_name == QWEN_3_5_397A17_SILICONFLOW or model_name == QWEN_3_5_122A10_SILICONFLOW:
-                response = client.chat.completions.create(
-                    model=model_name,
-                    messages=messages,
-                    temperature=self.temperature,
-                    stream=stream,
-                    extra_body={"enable_thinking": False}
-                )
-            else:
-                response = client.chat.completions.create(
-                    model=model_name,
-                    messages=messages,
-                    temperature=self.temperature,
-                    stream=stream
-                )
             content = response.choices[0].message.content
             # Intern will return None for usage
             if response.usage is not None:
