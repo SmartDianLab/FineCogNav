@@ -14,7 +14,7 @@ pip install msgpack
 pip install -U git+https://github.com/tbelhalfaoui/msgpack-rpc-python.git@fix-msgpack-dep
 ```
 
-Then follow this [GitHub Issue](https://github.com/microsoft/AirSim/issues/3333) to modify the `client.py` in your `airsim` installation:
+根据 [GitHub Issue](https://github.com/microsoft/AirSim/issues/3333) 修改 `airism`安装中的 `client.py`:
 
 ```bash
 pip show airsim
@@ -22,7 +22,7 @@ pip show airsim
 vim <path>/airsim/client.py
 ```
 
-Update the file as follows:
+更新文件:
 
 ```python
 class VehicleClient:
@@ -33,7 +33,7 @@ class VehicleClient:
         self.client = msgpackrpc.Client(msgpackrpc.Address(ip, port), timeout = timeout_value)
 ```
 
-If your server does not have a display device, you may need to install the following packages:
+如果你的服务器没有显示设备, 你可能需要安装这些包: 
 
 ```bash
 sudo apt install xdg-user-dirs xdg-utils
@@ -43,9 +43,9 @@ sudo apt install vulkan-tools libvulkan1 mesa-vulkan-drivers
 
 ### Simulator & Datasets
 
-Please follow [AerialVLN](https://github.com/AirVLN/AirVLN) to download Simulator files.
+请参照 [AerialVLN](https://github.com/AirVLN/AirVLN) 来下载模拟器.
 
-Create or modify the AirSim configuration file at: `~/Documents/AirSim/settings.json`, make sure `PhysicsEngineName` is `ExternalPhysicsEngine`.
+创建或修改AirSim配置文件: `~/Documents/AirSim/settings.json`, 确保`PhysicsEngineName`是 `ExternalPhysicsEngine`.
 
 ```json
 {
@@ -68,9 +68,9 @@ Create or modify the AirSim configuration file at: `~/Documents/AirSim/settings.
 }
 ```
 
-### Directory Structure
+### 目录结构
 
-Your project directory should be organized as follows:
+你的项目目录应该长这样: 
 
 ```
 .
@@ -89,9 +89,9 @@ Your project directory should be organized as follows:
     └── README.md
 ```
 
-## 🔧 **Example Usage**
+## 🔧 **使用示例**
 
-First, launch the simulator in one terminal: 
+首先在终端启动模拟器: 
 
 ```bash
 # make sure you are in FineCogNav/
@@ -100,11 +100,11 @@ python -u ./airsim_plugin/AirVLNSimulatorServerTool.py \
     --gpus 0
 ```
 
-You can optionally add --onscreen to enable visualization.
+你可以选择是否添加`--onscreen`来使模拟器可视化.
 
 ---
 
-Then, run the script in another terminal:
+然后在另一个终端运行以下脚本: 
 
 ```
 # make sure you are in FineCogNav/
@@ -116,28 +116,28 @@ bash ./scripts/eval_llm.sh \
     30001
 ```
 
-Arguments:
-+ LLM: Large Language Model name
-+ VLM: Vision-Language Model name
-+ DataSplit: JSON filename under `./DATA/data/aerialvln/`
-+ Port: Simulator port
+参数:
++ LLM: LLM 模型名称
++ VLM: VLM 模型名称
++ 数据集: `./DATA/data/aerialvln/`路径下的JSON文件名
++ 端口号: 模拟器通信端口
 
 ---
 
-To run multiple experiments in parallel, repeat the above steps with different ports.
+如果需要多组实验并行, 使用不同的端口号重复上述步骤. 
 
-⚠️ Make sure the port difference between instances is greater than 2.
+⚠️ 请确保不同实验间的端口号相差大于2.
 
 ## 📚 **Evaluation**
 
 TODO
 
-## 📜 **Citing**
-If you use FineCog-Nav in your research, please cite the following paper:
+## 📜 **引用**
+如果您在研究中使用了FineCog-Nav请引用以下文献:
 
 ```
 coming soon
 ```
 
-## 🥰 **Acknowledgement**
-* Some components modified from [AerialVLN](https://github.com/AirVLN/AirVLN). Thanks sincerely.
+## 🥰 **致谢**
+* 部分组件修改自 [AerialVLN](https://github.com/AirVLN/AirVLN). 衷心感谢.
