@@ -114,6 +114,16 @@ class VLMWrapper:
     def request_with_token_count(self, prompt, model_name=LLAMA3V, image=None, stream=False, multi_sentence=False, save_path=None):
         client = self.get_client(model_name)
 
+        if model_name == QWEN_OMNI_7B:
+            stream = True
+
+        if image is not None:
+            self.image_id += 1
+            if isinstance(image, Image.Image):
+                image = image_to_base64(image, save_path=save_path)
+            else:
+                image = image_to_base64(cv2.imread(image), save_path=save_path)
+                
         messages=[
             {
                 "role": "user", 
@@ -128,16 +138,6 @@ class VLMWrapper:
                 ]
             }
         ]
-
-        if model_name == QWEN_OMNI_7B:
-            stream = True
-
-        if image is not None:
-            self.image_id += 1
-            if isinstance(image, Image.Image):
-                image = image_to_base64(image, save_path=save_path)
-            else:
-                image = image_to_base64(cv2.imread(image), save_path=save_path)
 
         if stream:
             response = client.chat.completions.create(
