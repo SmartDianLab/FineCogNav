@@ -20,7 +20,6 @@ import torch.distributed as dist
 import torch.backends.cudnn as cudnn
 
 from PIL import Image
-import msgpack_numpy
 
 from utils.logger import logger
 from utils.vision import VisionClient

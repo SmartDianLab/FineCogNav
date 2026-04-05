@@ -2,7 +2,6 @@ import copy
 import random
 import time
 
-import msgpack_numpy
 import numpy as np
 import math
 import os

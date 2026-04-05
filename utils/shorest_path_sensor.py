@@ -3,10 +3,8 @@ import tqdm
 import time
 import numpy as np
 import numba as nb
-import networkx as nx
 import json
 from pathlib import Path
-import igraph as ig
 
 @nb.njit(nogil=True, cache=True)
 def EuclideanDistance3(point_a: np.array, point_b: np.array) -> float:
