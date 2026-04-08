@@ -128,9 +128,84 @@ bash ./scripts/eval_llm.sh \
 
 ⚠️ 请确保不同实验间的端口号相差大于2.
 
-## 📚 **Evaluation**
+## 📚 **评估说明**
 
-TODO
+评估脚本 (`scripts/eval.py`) 用于评估智能体的轨迹。
+
+```python
+python eval.py <ref_type> <pred_type> <gt_folder> <pred_path>
+```
+
+其中两个主要参数 `<ref_type>` 和 `<pred_type>` 分别定义了真值（ground truth）数据和预测（prediction）数据的格式。
+
+### 参数选项
+
+*   **`<ref_type>`**：指定真值（参考）数据的结构。
+    *   `1`：**完整层次（Full-level）**。参考数据为整个片段（episode）提供单一的路径和目标。
+    *   `2`：**句子层次（Sentence-level）**。参考数据被分解为一系列句子，每个句子都有自己的子目标和路径片段。
+
+*   **`<pred_type>`**：指定预测数据的结构。
+    *   `1`：**单个 JSON 文件（字典格式）**。所有预测结果都存放在一个字典形式的 JSON 文件中。
+    *   `2`：**JSON 文件夹（多字典格式）**。预测结果分散在目录中的多个 JSON 文件里，每个文件都是一个字典。
+    *   `3`：**单个 JSON 文件（单片段）**。该文件只包含一个片段的预测结果。
+    *   `4`：**JSON 文件夹（单片段文件）**。目录中的每个 JSON 文件都包含一个片段的预测结果。
+
+### 期望的文件/文件夹结构
+
+#### 当 `<ref_type>` = 1 (完整层次)
+真值文件夹应包含一个或多个 JSON 文件。每个文件必须包含一个 `episodes` 列表，其中每个片段都包含 `reference_path` 和 `goals` 列表。
+
+```
+gt_folder/
+└── gt_data.json
+```
+
+
+#### 当 `<ref_type>` = 2 (句子层次)
+真值文件夹应包含一个或多个 JSON 文件。每个文件代表一个单独的片段，并且必须包含一个 `sentence_instructions` 列表。该列表中的每条指令都应包含 `end_position` 和 `reference_path`。
+
+```
+gt_folder/
+├── episode_001.json
+├── episode_002.json
+└── ...
+```
+
+
+#### 当 `<pred_type>` = 1 (单字典文件)
+预测路径是一个单独的 JSON 文件，其中包含一个字典，每个键（key）对应一个片段 ID。
+
+```
+pred_path.json
+```
+
+
+#### 当 `<pred_type>` = 2 (多字典文件夹)
+预测路径是一个文件夹，里面包含多个 JSON 文件，每个文件都是一个片段字典。
+
+```
+pred_folder/
+├── preds_part1.json
+├── preds_part2.json
+└── ...
+```
+
+
+#### 当 `<pred_type>` = 3 或 4 (单文件或文件夹)
+预测路径可以是单个片段的 JSON 文件 (`3`)，也可以是一个文件夹，其中每个 JSON 文件对应一个片段的预测结果 (`4`)。
+
+**类型 3 的结构：**
+```
+single_pred.json
+```
+
+**类型 4 的结构：**
+```
+pred_folder/
+├── episode_001.json
+├── episode_002.json
+└── ...
+```
 
 ## 📜 **引用**
 如果您在研究中使用了FineCog-Nav请引用以下文献:
