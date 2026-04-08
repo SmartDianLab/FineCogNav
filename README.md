@@ -130,7 +130,76 @@ To run multiple experiments in parallel, repeat the above steps with different p
 
 ## 📚 **Evaluation**
 
-TODO
+Evaluation Script (`scripts/eval.py`) evaluates agent trajectories. The two main arguments, `<ref_type>` and `<pred_type>`, define the format of your ground truth and prediction data.
+
+### Options
+
+*   **`<ref_type>`**: Specifies the structure of the ground truth (reference) data.
+    *   `1`: **Full-level**. The reference data contains a single path and goal for the entire episode.
+    *   `2`: **Sentence-level**. The reference data is broken down into a sequence of sentences, each with its own sub-goal and path segment.
+
+*   **`<pred_type>`**: Specifies the structure of the prediction data.
+    *   `1`: **Single JSON file (dict)**. All predictions are in one dictionary-style JSON file.
+    *   `2`: **Folder of JSON files (multi-dict)**. The predictions are split across multiple JSON files within a directory.
+    *   `3`: **Single JSON file (single)**. The file contains the prediction for a single episode.
+    *   `4`: **Folder of JSON files (folder)**. Each JSON file in the directory contains a prediction for one episode.
+
+### Expected Folder/File Structure
+
+#### For `<ref_type>` = 1 (Full-level)
+The ground truth folder should contain one or more JSON files. Each file must have an `episodes` list, where each episode has a `reference_path` and a `goals` list.
+
+```
+gt_folder/
+└── gt_data.json
+```
+
+
+#### For `<ref_type>` = 2 (Sentence-level)
+The ground truth folder should contain one or more JSON files. Each file represents a single episode and must have a `sentence_instructions` list. Each instruction in this list should contain an `end_position` and a `reference_path`.
+
+```
+gt_folder/
+├── episode_001.json
+├── episode_002.json
+└── ...
+```
+
+
+#### For `<pred_type>` = 1 (Single dict)
+The prediction path is a single JSON file containing a dictionary where each key is an episode ID.
+
+```
+pred_path.json
+```
+
+
+#### For `<pred_type>` = 2 (Multi-dict folder)
+The prediction path is a folder containing multiple JSON files, each structured as a dictionary of episodes.
+
+```
+pred_folder/
+├── preds_part1.json
+├── preds_part2.json
+└── ...
+```
+
+
+#### For `<pred_type>` = 3 or 4 (Single file or Folder)
+The prediction path can be either a single JSON file for one episode (`3`) or a folder where each JSON file is a single episode's prediction (`4`).
+
+**For type 3:**
+```
+single_pred.json
+```
+
+**For type 4:**
+```
+pred_folder/
+├── episode_001.json
+├── episode_002.json
+└── ...
+```
 
 ## 📜 **Citing**
 If you use FineCog-Nav in your research, please cite the following paper:
