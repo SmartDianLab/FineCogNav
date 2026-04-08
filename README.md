@@ -130,7 +130,13 @@ To run multiple experiments in parallel, repeat the above steps with different p
 
 ## 📚 **Evaluation**
 
-Evaluation Script (`scripts/eval.py`) evaluates agent trajectories. The two main arguments, `<ref_type>` and `<pred_type>`, define the format of your ground truth and prediction data.
+Evaluation Script (`scripts/eval.py`) evaluates agent trajectories. 
+
+```python
+python eval.py <ref_type> <pred_type> <gt_folder> <pred_path>
+```
+
+The two main arguments, `<ref_type>` and `<pred_type>`, define the format of your ground truth and prediction data.
 
 ### Options
 
