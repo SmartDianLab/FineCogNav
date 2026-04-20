@@ -211,7 +211,15 @@ pred_folder/
 If you use FineCog-Nav in your research, please cite the following paper:
 
 ```
-coming soon
+@misc{shao2026finecognavintegratingfinegrainedcognitive,
+      title={FineCog-Nav: Integrating Fine-grained Cognitive Modules for Zero-shot Multimodal UAV Navigation}, 
+      author={Dian Shao and Zhengzheng Xu and Peiyang Wang and Like Liu and Yule Wang and Jieqi Shi and Jing Huo},
+      year={2026},
+      eprint={2604.16298},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV},
+      url={https://arxiv.org/abs/2604.16298}, 
+}
 ```
 
 ## 🥰 **Acknowledgement**
