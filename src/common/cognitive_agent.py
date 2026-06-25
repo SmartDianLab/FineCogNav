@@ -396,9 +396,9 @@ class Memory:
     def generate_step_memory(self, log_dir=None):
         current_instruction = context.current_instruction
         next_instruction = context.next_instruction
-        current_landmarks = current_instruction['landmark'].copy()
+        landmarks = current_instruction['landmark'].copy()
         next_landmarks = next_instruction['landmark'].copy() if next_instruction is not None else []
-        landmarks = current_landmarks.extend(next_landmarks)
+        landmarks.extend(next_landmarks)
         observation = context.current_observation
         subgoal = context.current_subgoal
         start_time = time.time()
